@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AuthContext, type AuthContextTypes } from "../contexts/AuthContext";
 import type { User } from "../types";
+import { storeToken } from "../services/authToken";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     // set up the auth state - whether user is authenticated or not
@@ -22,6 +23,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         setCurrentUser(user);
         // set auth state to true
         setIsAuthenticated(true);
+
+        // import utility from authToken to store it there for axios' use in requests
+        storeToken(token);
 
         // REMOVE THIS IS FOR DEBUGGING!
         console.log(user);
