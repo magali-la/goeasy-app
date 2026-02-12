@@ -4,6 +4,7 @@ import Landing from './pages/Landing'
 import Signup from './pages/Signup'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
+import { ProtectedRoute } from './routes/ProtectedRoute'
 
 
 function App() {
@@ -19,8 +20,10 @@ function App() {
 				{/* login */}
 				<Route path='login' element={<Login/>}/>
 
-				{/* TODO: authenticated user home */}
-				<Route path='dashboard' element={<Dashboard/>}/>
+				{/* authenticated home */}
+				<Route element={<ProtectedRoute/>}>
+					<Route path='home' element={<Dashboard/>}/>
+				</Route>
 			</Routes>
 		</>
 	)
