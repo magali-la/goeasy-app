@@ -13,15 +13,15 @@ export default function Signup() {
             // TO DELETE set testInput prior to form creation - check when messing up the password and email
             const testInput = {
                 username: 'testingfrontend',
-                email: 'testingfrontendgmail.com',
+                email: 'testingfrontend@gmail.com',
                 password: 'testfrontend1'
             }
 
             // axios call for the route
-            const res = await axiosInstance.post('/api/users/register', testInput)
+            const res = await axiosInstance.post('/api/users/signup', testInput)
 
-            // call login to store the token
-            login(res.data.token, res.data.user);
+            // call login to store the user
+            login(res.data.user);
 
             // if successful go to /home which is the dashboard for authenicated user
             navigate("/home");

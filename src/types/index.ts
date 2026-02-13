@@ -16,6 +16,5 @@ export interface User {
 
 // Auth Response - the shape of the response the backend sends to the client for login/signup/google oauth routes
 export interface AuthResponse {
-    token: string;
     user: User;
 }
