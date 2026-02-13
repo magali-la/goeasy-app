@@ -37,9 +37,26 @@ export default function Signup() {
         }
     }
 
+    // function to 
+    async function googleLogin() {
+        try {
+            // this will follow the redirect initiated in the OAuth flow - backend will manage redirecting to home
+            window.location.href = import.meta.env.VITE_GOOGLE_AUTH_URL;
+        } catch (error: any) {
+            if (error.response) {
+                // message with the error status & message sent from the backend
+                console.log(error.response.status, error.response.data.message);
+            } else {
+                // generic error if not
+                console.error("Google Signup failed", error);
+            } 
+        } 
+    }
+
     return (
         <>
             <h1>Signup Page</h1>
+            <button className="py-2 px-5 cursor-pointer" onClick={googleLogin}><i className="bi bi-google"></i>Sign up with Google</button>
             <button className="bg-blue-500 text-white cursor-pointer" onClick={handleSignup}>Click me to sign up</button>
         </>
     )
