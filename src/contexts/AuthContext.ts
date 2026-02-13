@@ -1,5 +1,4 @@
 // AUTH CONTEXT - this is going to define the type for the auth context, 
-
 import { createContext, useContext } from "react";
 import type { User } from "../types";
 
@@ -7,6 +6,7 @@ import type { User } from "../types";
 export interface AuthContextTypes {
     isAuthenticated: boolean;
     currentUser: User | null;
+    isCheckingAuth: boolean;
     // login is going to take in the backend response with the user to authenticate the user in the frontend for protected routes
     login: (user: User) => void;
     logout: () => void;
