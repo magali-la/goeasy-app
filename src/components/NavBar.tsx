@@ -17,13 +17,13 @@ export default function NavBar() {
             {/* conditional nav links section */}
             <section aria-label="Nav links">
                 {isAuthenticated ? (
-                    <div className="flex flex-row justify-between">
-                        <ul>
-                            <NavLink to="/home">Home</NavLink>
-                            <NavLink to="/trips">Trips</NavLink>
-                            I'm an authenticated nav link
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 md:gap-10">
+                        <ul className="flex flex-row gap-3 md:gap-6">
+                            <NavLink to="/home" className="text-2xl hover:underline hover:text-mustard transition-all duration-250">Home</NavLink>
+                            <NavLink to="/trips" className="text-2xl hover:underline hover:text-mustard transition-all duration-250">Trips</NavLink>
+                            <NavLink to="/explore" className="text-2xl hover:underline hover:text-mustard transition-all duration-250">Explore</NavLink>
                         </ul>
-                        <button className="bg-orange-500 px-4 py-2 rounded-full">logout</button>
+                        <Button shape="md" className='bg-mustard' label="logout"/>
                     </div>
                 ) : (
                     <div className="flex flex-col md:flex-row items-center justify-evenly gap-2 md:gap-10">
