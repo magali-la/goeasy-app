@@ -2,42 +2,69 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import type { User } from "../types";
 import { axiosInstance } from "../services/axios";
+import BoardingPass from "../components/BoardingPass";
+import { useNavigate } from "react-router";
+import Button from "../components/Button";
 
 export default function Dashboard() {
-    const { isAuthenticated, currentUser } = useAuth();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [profileUser, setProfileUser] = useState<User | null>(null);
+    
+    const { isAuthenticated } = useAuth();
+    const navigate = useNavigate();
 
-     useEffect(() => {
-    async function fetchUser() {
-      try {
-        const res = await axiosInstance.get("/api/users/me");
-        setProfileUser(res.data);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
+    
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const res = await axiosInstance.get("/api/users/me");
+                setProfileUser(res.data);
+            } catch (error: any) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
 
-    if (isAuthenticated) {
-      fetchUser();
-    }
-  }, [isAuthenticated]);
+        if (isAuthenticated) {
+            fetchUser();
+        }
+    }, [isAuthenticated]);
 
-  if (loading) return <div>Loading user...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!profileUser) return <div>No user data</div>;
+    if (loading) return <div>Loading user...</div>;
+    if (error) return <div>Error: {error}</div>;
+    if (!profileUser) return <div>No user data</div>;
+
+    // get trips from the user
+    const trips = profileUser.trips;
 
     return (
-        <>
-            <h1>Dashboard - Authenticated User Page</h1>
-            <h2>Profile fetch test</h2>
-            <p>Username: {profileUser.username}</p>
-            <p>User ID: {profileUser._id}</p>
-            <p>Email: {profileUser.email}</p>
-            <p>Profile created at: {profileUser.createdAt}</p>
-        </>
+        <div className="min-h-screen flex flex-col gap-6 p-10">
+            <h2>Your Recent Trips</h2>
+            {/* slice it and map them */}
+            {profileUser.trips.slice(0, 3).map((trip) => (
+              <BoardingPass
+                key={trip._id}
+                trip={trip}
+              />
+            ))}
+
+            {/* add trips cta */}
+            <section aria-label="plan a new trip" className="flex flex-col md:flex-row justify-center gap-10 md:gap-20 items-center">
+                <div className="flex flex-col gap-8">
+                    <h2 className="self-center">Ready to plan your next adventure?</h2>
+                    <h3>You don’t need a plan yet. Just a place you’d rather be.</h3>
+                    <Button shape="md" label="Plan a new trip" className="bg-leaf w-fit self-center" onClick={() => navigate("/trips")}/>
+                </div>
+                <img src="https://images.unsplash.com/photo-1760716052663-4285ce91e54e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="backpacker facing towards mountains" className="w-2/5 self-center rounded-3xl"/>
+            </section>
+
+            {/* explore activities cta */}
+            <h2>Need inspiration?</h2>
+            <h3>Explore our curated picks for cheap eats and fun events on a budget!</h3>
+            <img src="https://images.unsplash.com/photo-1560833288-6c3291bf197e?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="group of people at an intimate outdoors food event sitting at a large table" className="w-2/5 self-center rounded-3xl"/>
+            <Button shape="md" label="Explore activities" className="bg-sea w-fit self-center" onClick={() => navigate("/explore")}/>
+        </div>
     )
 }

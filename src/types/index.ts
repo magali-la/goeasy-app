@@ -12,7 +12,12 @@ export interface User {
     // the timestamp will come back as well for profile
     createdAt: string;
     updatedAt: string;
-    trips: Trip[];    
+    // add these to make sure you can get the data for spending calculations
+    trips: Trip[]; 
+    activities: {
+        tripId: string;
+        activityIds: any[]
+    }[]
 }
 
 // Auth Response - the shape of the response the backend sends to the client for login/signup/google oauth routes
