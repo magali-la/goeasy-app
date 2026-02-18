@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { axiosInstance } from "../services/axios";
 import Button from "../components/Button";
 import { motion } from "motion/react";
@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 export default function TripDetail() {
     // take the tripId from the params
     const { tripId } = useParams();
+    const navigate = useNavigate();
 
     // set a loading states and errors
     const [loading, setLoading] = useState(true);
@@ -84,6 +85,31 @@ export default function TripDetail() {
         }
     }
 
+    // delete a trip
+    async function handleDeleteTrip() {
+        const ok = window.confirm("Delete this trip? This can't be undone.");
+        if (!ok) return;
+
+        try {
+            await axiosInstance.delete(`/api/trips/${tripId}`);
+            navigate("/trips");
+        } catch {
+            alert("Failed to delete trip.");
+        }
+    }
+
+    // delete an activity
+    async function handleDeleteActivity(activityId: string) {
+        const ok = window.confirm("Delete activity from this trip? This can't be undone");
+        if (!ok) return;
+
+        try {
+            await axiosInstance.delete(`/api/trips/${tripId}/activities/${activityId}`);
+            window.location.reload();    
+        } catch {
+            alert("Failed to delete this activity");
+        }
+    }
     // loading and error handlers
     if (loading) return <div className="p-10">Loading trip...</div>;
     if (error) return <div className="p-10">Error: {error}</div>;
@@ -137,6 +163,8 @@ export default function TripDetail() {
 
                     <Button type="submit" shape="md" label={saving ? "Saving..." : "Save Changes"} className="bg-leaf w-fit self-center"
                     />
+                    <Button type="button" shape="sm" label="Delete Trip" className="bg-red-400 font-normal w-fit self-center" onClick={handleDeleteTrip}
+                    />
                 </form>
             )}
 
@@ -172,7 +200,7 @@ export default function TripDetail() {
                                 </div>
 
                                 {/* button to add to trip */}
-                                <Button shape="sm" label="Add to Trip" className="bg-leaf mt-2 self-center"/>
+                                <Button shape="sm" label="Delete from Trip" className="bg-red-400 mt-2 self-center" onClick={() => handleDeleteActivity(activity._id)}/>
                             </div>
                         </motion.div>
                     ))}

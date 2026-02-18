@@ -56,25 +56,27 @@ export default function Trips() {
     return (
         <div className="min-h-screen p-10 flex flex-col gap-4">
             {/* CTA for form - conditional view based off if the user has trips or not yet */}
-            <div className="px-40">
+            <div className="px-40 self-center">
                 <TripForm/>
             </div>
 
             <h2>Your Trips</h2>
             {/* user's trips - all of the boarding passes they can browse */}
-            {trips.length === 0 ? (
-                <p className="opacity-70">No trips yet — create one above.</p>
-            ) : (
-                <div className="flex flex-col gap-4">
-                {trips.map((trip) => (
-                    <BoardingPass 
-                        key={trip._id} 
-                        trip={trip} 
-                        planned={plannedForTrip(trip._id)}
-                    />
-                ))}
-                </div>
-            )}
+            <div className="px-[10vw] md:px-[20vw]">
+                {trips.length === 0 ? (
+                    <p className="opacity-70">No trips yet — create one above.</p>
+                ) : (
+                    <div className="flex flex-col gap-4">
+                    {trips.map((trip) => (
+                        <BoardingPass
+                            key={trip._id}
+                            trip={trip}
+                            planned={plannedForTrip(trip._id)}
+                        />
+                    ))}
+                    </div>
+                )}
+            </div>
             {/* trip stats - how many they have planned, how much money they intend to spend and their budgets */}
             <h2>Trips Stats</h2>
             <p>You have {totalTrips} trip{totalTrips !== 1 && "s"} planned and{" "} {totalActivities} activit{totalActivities === 1 ? "y" : "ies"} in total.</p>
