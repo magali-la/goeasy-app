@@ -11,10 +11,32 @@ export interface User {
     provider: Providers;
     // the timestamp will come back as well for profile
     createdAt: string;
-    updatedAt: string;    
+    updatedAt: string;
+    trips: Trip[];    
 }
 
 // Auth Response - the shape of the response the backend sends to the client for login/signup/google oauth routes
 export interface AuthResponse {
     user: User;
+}
+
+// Trip type
+export type TripStatus = "planning" | "upcoming" | "ongoing" | "archived";
+
+export interface Trip {
+    _id: string;
+    title: string;
+    description: string;
+    city: "nyc" | "atlanta" | "lyon";
+    startDate: string;
+    endDate: string;
+    isExact?: boolean;
+    status: TripStatus;
+    participants: string[];
+    activities: {
+        activityId: string;
+        participants: string[];
+    }[];
+    createdAt: string;
+    updatedAt: string;
 }
