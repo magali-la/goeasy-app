@@ -43,12 +43,14 @@ export default function Dashboard() {
         <div className="min-h-screen flex flex-col gap-6 p-10">
             <h2>Your Recent Trips</h2>
             {/* slice it and map them */}
-            {profileUser.trips.slice(0, 3).map((trip) => (
-              <BoardingPass
-                key={trip._id}
-                trip={trip}
-              />
-            ))}
+            <div className="flex flex-col gap-6 px-[10vw] md:px-[20vw]">
+                {profileUser.trips.slice(0, 3).map((trip) => (
+                  <BoardingPass
+                    key={trip._id}
+                    trip={trip}
+                  />
+                ))}
+            </div>
 
             {/* add trips cta */}
             <section aria-label="plan a new trip" className="flex flex-col md:flex-row justify-center gap-10 md:gap-20 items-center">
