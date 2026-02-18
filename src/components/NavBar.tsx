@@ -9,7 +9,7 @@ export default function NavBar() {
     const navigate = useNavigate();
 
     return (
-        <nav className="flex flex-col md:flex-row items-center md:justify-between bg-pink-100 px-20 py-2 gap-3 sticky top-0" role="navigation">
+        <nav className="flex flex-col md:flex-row items-center md:justify-between bg-pink-100 px-20 py-2 gap-3 sticky top-0 z-50" role="navigation">
             {/* title section */}
             <NavLink to="/">
                 <img id="logo" src="/logohoriz.svg" alt="logo illustration of backpack in colors teal, green, and orange with GoEasy name to the right"></img>

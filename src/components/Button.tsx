@@ -11,7 +11,7 @@ const buttonVariants = tv({
         shape: {
             sm: 'px-6 py-2 text-lg font-semibold rounded-full',
             md: 'px-12 py-3 text-xl font-semibold rounded-full',
-            auth: 'px-14 py-6 text-xl rounded-3xl w-full',
+            auth: 'px-14 py-4 text-xl rounded-3xl w-full bg-berry text-cream',
             circ: 'h-12 w-12 rounded-full p-2'
         }
     },

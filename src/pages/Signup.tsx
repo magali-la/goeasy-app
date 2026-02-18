@@ -1,63 +1,18 @@
-import { useNavigate } from "react-router";
-import { useAuth } from "../contexts/AuthContext"
-import { axiosInstance } from "../services/axios.ts";
+import SignupForm from "../components/Auth/SignupForm.tsx";
 
 export default function Signup() {
-    // import login function to store the token and update auth state in memory
-    const { login } = useAuth();
-    const navigate = useNavigate()
-
-    async function handleSignup() {
-        // try catch with axios, then call login function from auth provider
-        try {
-            // TO DELETE set testInput prior to form creation - check when messing up the password and email
-            const testInput = {
-                username: 'testingfrontend',
-                email: 'testingfrontend@gmail.com',
-                password: 'testfrontend1'
-            }
-
-            // axios call for the route
-            const res = await axiosInstance.post('/api/users/signup', testInput)
-
-            // call login to store the user
-            login(res.data.user);
-
-            // if successful go to /home which is the dashboard for authenicated user
-            navigate("/home");
-
-        } catch (error: any) {
-            if (error.response) {
-                // message with the error status & message sent from the backend
-                console.log(error.response.status, error.response.data.message);
-            } else {
-                // generic error if not
-                console.error("Signup failed", error);
-            } 
-        }
-    }
-
-    // function to 
-    async function googleLogin() {
-        try {
-            // this will follow the redirect initiated in the OAuth flow - backend will manage redirecting to home
-            window.location.href = import.meta.env.VITE_GOOGLE_AUTH_URL;
-        } catch (error: any) {
-            if (error.response) {
-                // message with the error status & message sent from the backend
-                console.log(error.response.status, error.response.data.message);
-            } else {
-                // generic error if not
-                console.error("Google Signup failed", error);
-            } 
-        } 
-    }
 
     return (
-        <>
-            <h1>Signup Page</h1>
-            <button className="py-2 px-5 cursor-pointer" onClick={googleLogin}><i className="bi bi-google"></i>Sign up with Google</button>
-            <button className="bg-blue-500 text-white cursor-pointer" onClick={handleSignup}>Click me to sign up</button>
-        </>
+        <div className="relative min-h-full p-10">
+            {/* decorative background div*/}
+            <div className="h-1/2 bg-liteberry absolute"></div>
+            <div className="flex flex-col md:flex-row justify-between gap-10">
+                <div className="flex flex-col gap-8 md:gap-20">
+                    <h1 className="font-dela">Your travels await you...</h1>
+                    <img className="rounded-2xl shadow-lg shadow-liteberry" src="https://images.unsplash.com/photo-1627286763057-f223c52f3e1a?q=80&w=1417&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="friends walking on a busy, sunny pier with bikes and backpacks"/>
+                </div>
+                <SignupForm/>
+            </div>
+        </div>
     )
 }
