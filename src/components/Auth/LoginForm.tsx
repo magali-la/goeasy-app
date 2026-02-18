@@ -72,7 +72,7 @@ export default function LoginForm() {
 
     return (
         // remove browser tooltips for form validation
-        <form className="rounded-2xl bg-white h-1/2 p-8 flex flex-col gap-4 min-w-1/2 justify-center items-center" aria-label="signup for an account" onSubmit={handleSignup} noValidate>
+        <form className="rounded-2xl bg-white h-1/2 p-8 flex flex-col gap-4 min-w-1/2 justify-center items-center" aria-label="signup for an account" onSubmit={handleLogin} noValidate>
             <h2 className="font-dela self-start">Login to your Account</h2>
 
             {/* google button */}
