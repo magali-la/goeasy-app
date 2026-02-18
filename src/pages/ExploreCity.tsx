@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { axiosInstance } from "../services/axios";
 import { motion } from "motion/react";
 import Button from "../components/Button";
+import { useAuth } from "../contexts/AuthContext";
 
 // activity interface - shape of the data in mongodb
 export interface Activity {
@@ -24,6 +25,11 @@ export default function ExploreCity() {
     // set a loading stats and errors
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // add state to store the trips and selected trip to add an activity
+    const { currentUser } = useAuth();
+    const [userTrips, setUserTrips] = useState<any[]>([]);
+    const [selectedTripId, setSelectedTripId] = useState<string>("");
 
     // useEffect when the page mounts, get the necessary info from the database based off the param
     useEffect(() => {
@@ -51,6 +57,39 @@ export default function ExploreCity() {
         fetchCityActivities()
     }, [cityId]);
 
+    // use effect to fetch the user and get most updated version
+    useEffect(() => {
+        async function fetchUser() {
+            const response = await axiosInstance.get("/api/users/me");
+            // take the trips from this user to use it for a list - these are populated
+            setUserTrips(response.data.trips || []);
+
+            // conditional logic to set the trips in the dropdown 
+            if ((response.data.trips || []).length > 0) {
+                setSelectedTripId(response.data.trips[0]._id);
+            }
+        }
+        fetchUser();
+    }, []);
+
+    // handler for adding an activity to a trip
+    async function handleAddToTrip(activityId: string) {
+        if (!selectedTripId) {
+            alert("Create a trip first (go to Trips page).");
+            return;
+        }
+
+        try {
+            await axiosInstance.post(`/api/trips/${selectedTripId}/activities`, {
+            activityId,
+            participants: [currentUser!._id], // simplest for demo
+            });
+            alert("Added to trip!");
+        } catch (error: any) {
+            alert(error?.response?.data?.message || "Failed to add activity.");
+        }
+    }
+
     return (
         <div className="min-h-screen p-10 flex flex-col gap-4">
             <h1 className="capitalize">Explore Activities in {cityId}</h1>
@@ -58,6 +97,23 @@ export default function ExploreCity() {
             {/* set loading and error states */}
             {loading && <p className="text-lg">Loading Activities...</p>}
             {error && <p className=" text-red-800">{error}</p>}
+
+            {/* conditional dropdown menu to add to a trip */}
+            {userTrips.length > 0 ? (
+                <div className="flex items-center gap-3">
+                    <p className="font-medium">Add activities to:</p>
+                    <select value={selectedTripId} onChange={(event) => setSelectedTripId(event.target.value)} className="rounded-lg px-3 py-2">
+                        {/* map the user's trips as options for the dropdown */}
+                        {userTrips.map((trip) => (
+                            <option key={trip._id} value={trip._id}>
+                                {trip.title}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            ) : (
+                <p className="opacity-70">No trips yet — create one in Trips first.</p>
+            )}
 
             {/* share the activities when it's not loading or error */}
             {!loading && !error && (
@@ -91,7 +147,7 @@ export default function ExploreCity() {
                                 </div>
 
                                 {/* button to add to trip */}
-                                <Button shape="sm" label="Add to Trip" className="bg-leaf mt-2 self-center"/>
+                                <Button shape="sm" label="Add to Trip" className="bg-leaf mt-2 self-center" onClick={() => handleAddToTrip(activity._id)}/>
                             </div>
                         </motion.div>
                     ))}
