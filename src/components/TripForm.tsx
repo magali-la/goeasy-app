@@ -63,7 +63,7 @@ export default function TripForm() {
     }
 
     return (
-        <form className="rounded-2xl bg-litemustard p-6 flex flex-col gap-4" onSubmit={handleCreateTrip}noValidate aria-label="create a trip">
+        <form className="rounded-2xl bg-litemustard p-6 flex flex-col gap-4 w-fit" onSubmit={handleCreateTrip} noValidate aria-label="create a trip">
             <h2>Plan your next adventure</h2>
 
             <label htmlFor="tripName" className="font-medium text-lg self-start">Trip Name</label>
