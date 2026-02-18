@@ -38,7 +38,7 @@ function App() {
 					{/* explore routes */}
 					<Route path='explore'>
 						<Route index element={<Explore/>} />
-						<Route path=':slug' element={<ExploreCity/>} />
+						<Route path=':cityId' element={<ExploreCity/>} />
 					</Route>
 				</Route>
 			</Routes>
