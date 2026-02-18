@@ -9,7 +9,7 @@ export interface AuthContextTypes {
     isCheckingAuth: boolean;
     // login is going to take in the backend response with the user to authenticate the user in the frontend for protected routes
     login: (user: User) => void;
-    logout: () => void;
+    logout: () => Promise<void>;
 }
 
 // name the AuthContext from the types

@@ -52,11 +52,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     }
 
     // Logout - restore everything to default
-    function logout() {
-        setCurrentUser(null);
-        setIsAuthenticated(false);
-
-        console.log('User is logged out');
+    async function logout() {
+        // call bckend logout route to clear the cookie
+        try {
+            await axiosInstance.post("/api/users/logout");
+        } catch (error) {
+            console.log("Error logging out", error);
+        } finally {
+            setCurrentUser(null);
+            setIsAuthenticated(false);
+            console.log('User is logged out');
+        }
     }
 
     // set up the values

@@ -4,9 +4,15 @@ import Button from "./Button";
 
 export default function NavBar() {
     // use this to determine navbar
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, logout } = useAuth();
     // useNav for buttns
     const navigate = useNavigate();
+
+    // logout function - mke it async to wait for the resolve before navigating
+    async function handleLogout() {
+        await logout();
+        navigate("/")
+    }
 
     return (
         <nav className="flex flex-col md:flex-row items-center md:justify-between bg-pink-100 px-20 py-2 gap-3 sticky top-0 z-50" role="navigation">
@@ -23,7 +29,7 @@ export default function NavBar() {
                             <NavLink to="/trips" className="text-2xl hover:underline hover:text-mustard transition-all duration-250">Trips</NavLink>
                             <NavLink to="/explore" className="text-2xl hover:underline hover:text-mustard transition-all duration-250">Explore</NavLink>
                         </ul>
-                        <Button shape="md" className='bg-mustard' label="logout"/>
+                        <Button shape="md" className='bg-mustard' label="logout" onClick={handleLogout}/>
                     </div>
                 ) : (
                     <div className="flex flex-col md:flex-row items-center justify-evenly gap-2 md:gap-10">
