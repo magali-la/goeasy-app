@@ -63,6 +63,11 @@ body {
     @apply bg-cream text-dark font-kanit;
 }
 
+/* header styling */
+h1, h2 {
+    @apply font-dela;
+}
+
 /* input styling */
 input[type="text"], input[type="email"], input[type="password"] {
     @apply py-2 px-4 bg-[#FAF3FB] placeholder:text-[#7E6F6F] placeholder:italic outline-1 rounded-2xl w-full;
