@@ -13,6 +13,16 @@ export default function TripDetail() {
     const [error, setError] = useState("");
     const [trip, setTrip] = useState<any>(null);
 
+    // state for editing trip
+    const [isEditing, setIsEditing] = useState(false);
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [status, setStatus] = useState("planning");
+    const [saving, setSaving] = useState(false);
+    const [editError, setEditError] = useState("");
+
     // on mount get the trip
     useEffect(() => {
         async function fetchTrip() {
@@ -22,6 +32,14 @@ export default function TripDetail() {
 
                 // set the trip in state
                 setTrip(response.data);
+
+                // take this data to populate the edit form states
+                setTitle(response.data.title || "");
+                setDescription(response.data.description || "");
+                setStartDate((response.data.startDate || "").slice(0, 10));
+                setEndDate((response.data.endDate || "").slice(0, 10));
+                setStatus(response.data.status || "planning");
+
             } catch (error: any) {
                 setError(error.response.data.message);
             } finally {
@@ -31,6 +49,40 @@ export default function TripDetail() {
 
         fetchTrip();
     }, [tripId]);
+
+    // save handler for edit mode
+    async function handleSave(event: React.SubmitEvent<HTMLFormElement>) {
+        event.preventDefault();
+        setEditError("");
+
+        try {
+            // start saving mode
+            setSaving(true);
+
+            // run the request with the state varibles
+            const response = await axiosInstance.put(`/api/trips/${tripId}`, {
+                title,
+                description,
+                startDate,
+                endDate,
+                status
+            });
+
+            console.log("PUT response:", response.data);
+
+            // hit a refresh to make sure that the tags and activity data is up to date and avoid errors
+            const refreshed = await axiosInstance.get(`/api/trips/${tripId}`)
+
+            // set the trip again to make sure it's updated
+            setTrip(refreshed.data);
+            setIsEditing(false);
+
+        } catch (error: any) {
+            setEditError(error.message)
+        } finally {
+            setSaving(false)
+        }
+    }
 
     // loading and error handlers
     if (loading) return <div className="p-10">Loading trip...</div>;
@@ -49,6 +101,45 @@ export default function TripDetail() {
                     {new Date(trip.endDate).toLocaleDateString()}
                 </h3>
             </div>
+            {/* conditionl label based off editing status */}
+            <Button shape="md" label={isEditing ? "Close" : "Edit Trip"} className="bg-lav w-fit" onClick={() => setIsEditing((v) => !v)}/>
+
+            {/* conditionl render of the edit form */}
+            {isEditing && (
+                <form onSubmit={handleSave} className="rounded-2xl bg-litemustard p-6 flex flex-col gap-4">
+                    <label className="font-medium">Trip Name</label>
+                    <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} />
+
+                    <label className="font-medium">Description</label>
+                    <textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={3} />
+
+                    <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex gap-3 items-center">
+                        <label className="font-medium">Start Date</label>
+                        <input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} />
+                    </div>
+
+                    <div className="flex gap-3 items-center">
+                        <label className="font-medium">End Date</label>
+                        <input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} />
+                    </div>
+                    </div>
+
+                    <label className="font-medium">Status</label>
+                    <select value={status} onChange={(event) => setStatus(event.target.value)}>
+                        <option value="planning">planning</option>
+                        <option value="upcoming">upcoming</option>
+                        <option value="ongoing">ongoing</option>
+                        <option value="archived">archived</option>
+                    </select>
+
+                    {editError && <p className="text-red-800">{editError}</p>}
+
+                    <Button type="submit" shape="md" label={saving ? "Saving..." : "Save Changes"} className="bg-leaf w-fit self-center"
+                    />
+                </form>
+            )}
+
             <h2 className="text-2xl font-semibold">Planned Activities</h2>
             <section className=" grid grid-cols-1 md:grid-cols-3 gap-6" aria-label={`List of activities for ${tripId}`}>
                     {/* map activities objects and get the right data */}
@@ -74,7 +165,8 @@ export default function TripDetail() {
 
                                 {/* tags */}
                                 <div className="mt-3 flex flex-wrap gap-2">
-                                    {activity.tags.map((tag) => (
+                                    {/* add guard bc after update the route for updating doesnt repopulate the full activity objects */}
+                                    {(activity.tags || []).map((tag) => (
                                         <span key={tag} className="px-3 py-1 rounded-full text-base bg-sea">{tag}</span>
                                     ))}
                                 </div>
