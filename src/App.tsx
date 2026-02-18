@@ -6,6 +6,10 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import { ProtectedRoute } from './routes/ProtectedRoute'
 import NavBar from './components/NavBar'
+import Trips from './pages/Trips'
+import TripDetail from './pages/TripDetail'
+import Explore from './pages/Explore'
+import ExploreCity from './pages/ExploreCity'
 
 function App() {
 	return (
@@ -21,9 +25,21 @@ function App() {
 				{/* login */}
 				<Route path='login' element={<Login/>}/>
 
-				{/* authenticated home */}
+				{/* protected routes */}
 				<Route element={<ProtectedRoute/>}>
+					{/* authenticated home */}
 					<Route path='home' element={<Dashboard/>}/>
+
+					{/* trips routes */}
+					<Route path='trips'>
+						<Route index element={<Trips/>} />
+						<Route path=':slug' element={<TripDetail/>} />
+					</Route>
+					{/* explore routes */}
+					<Route path='explore'>
+						<Route index element={<Explore/>} />
+						<Route path=':slug' element={<ExploreCity/>} />
+					</Route>
 				</Route>
 			</Routes>
 		</>
