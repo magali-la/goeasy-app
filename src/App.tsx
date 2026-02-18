@@ -33,7 +33,7 @@ function App() {
 					{/* trips routes */}
 					<Route path='trips'>
 						<Route index element={<Trips/>} />
-						<Route path=':slug' element={<TripDetail/>} />
+						<Route path=':tripId' element={<TripDetail/>} />
 					</Route>
 					{/* explore routes */}
 					<Route path='explore'>
