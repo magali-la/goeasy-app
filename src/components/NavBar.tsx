@@ -29,7 +29,7 @@ export default function NavBar() {
                             <NavLink to="/trips" className="text-2xl hover:underline hover:text-mustard transition-all duration-250">Trips</NavLink>
                             <NavLink to="/explore" className="text-2xl hover:underline hover:text-mustard transition-all duration-250">Explore</NavLink>
                         </ul>
-                        <Button shape="md" className='bg-mustard' label="logout" onClick={handleLogout}/>
+                        <Button shape="sm" className='bg-mustard' label="Logout" onClick={handleLogout}/>
                     </div>
                 ) : (
                     <div className="flex flex-col md:flex-row items-center justify-evenly gap-2 md:gap-10">
