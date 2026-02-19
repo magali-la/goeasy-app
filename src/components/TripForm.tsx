@@ -3,7 +3,12 @@ import { useAuth } from "../contexts/AuthContext";
 import { axiosInstance } from "../services/axios";
 import Button from "./Button";
 
-export default function TripForm() {
+// interface for prop so that UI refreshes in Trips after new trip is created, refetch user to display new trip's boarding pass in UI
+interface TripFormProps {
+    onCreatedTrip: () => void;
+}
+
+export default function TripForm({ onCreatedTrip }: TripFormProps) {
     // get the user from the auth context
     const { currentUser } = useAuth();
     // set state for controlled components
@@ -54,6 +59,9 @@ export default function TripForm() {
             setStartDate("");
             setEndDate("");
             setIsExact(true);
+
+            // parent Trips page runs this to refetch user
+            onCreatedTrip();
 
         } catch (error: any) {
             setError(error.response.data.message)

@@ -12,18 +12,19 @@ export default function Trips() {
     // always update the user!
     const [profileUser, setProfileUser] = useState<User | null>(null);
 
-    useEffect(() => {
-        async function fetchUser() {
-            try {
-                const response = await axiosInstance.get("/api/users/me");
-                setProfileUser(response.data);
-            } catch (error: any) {
-                setError(error.response.data.message)
-            } finally {
-                setLoading(false);
-            }
+    // pull this out of the useEffect to be used in the prop for UI refresh after a trip is created so the new boarding pass is showing
+    async function fetchUser() {
+        try {
+            const response = await axiosInstance.get("/api/users/me");
+            setProfileUser(response.data);
+        } catch (error: any) {
+            setError(error.response.data.message)
+        } finally {
+            setLoading(false);
         }
+    }
 
+    useEffect(() => {
         fetchUser();
 
     }, [isAuthenticated]);
@@ -38,12 +39,12 @@ export default function Trips() {
 
     // check for spending stats
     const plannedForTrip = (tripId: string) => {
-    const group = profileUser.activities?.find((g) => g.tripId === tripId);
-    if (!group) return 0;
+        const groupOfActivities = profileUser.activities?.find((group) => group.tripId === tripId);
+        if (!groupOfActivities) return 0;
 
-    return group.activityIds.reduce((sum: number, act: any) => {
-        return sum + (act?.price ?? 0);
-    }, 0);
+        return groupOfActivities.activityIds.reduce((sum: number, act: any) => {
+            return sum + (act?.price ?? 0);
+        }, 0);
     };
 
     // check for staats
@@ -57,7 +58,7 @@ export default function Trips() {
         <div className="min-h-screen p-10 flex flex-col gap-4">
             {/* CTA for form - conditional view based off if the user has trips or not yet */}
             <div className="px-40 self-center">
-                <TripForm/>
+                <TripForm onCreatedTrip={fetchUser}/>
             </div>
 
             <h2>Your Trips</h2>
