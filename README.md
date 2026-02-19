@@ -8,7 +8,8 @@ GoEasy is a travel planning application designed to help budget-conscious travel
 
 Users can browse curated activities, create and edit trips, add activities to their itinerary, and see how their choices impact their personal budget. The goal is simple: plan smarter and make meaningful trips without overspending.
 
-This app leverages React and TypeScript for dynamic state management and TailwindCSS for styling, and Motion for animations.
+This app leverages React and TypeScript for dynamic state management and TailwindCSS for styling, and Motion for animations. The backend is hosted on Render.
+To view the backend repo go here: https://github.com/magali-la/goeasy-backend 
 
 ## Table of Contents
 * [Tech Stack](#techstack)
