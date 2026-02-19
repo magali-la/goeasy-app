@@ -36,8 +36,15 @@ export default function Dashboard() {
     if (error) return <div>Error: {error}</div>;
     if (!profileUser) return <div>No user data</div>;
 
-    // get trips from the user
-    const trips = profileUser.trips;
+    // check for spending stats
+    const plannedForTrip = (tripId: string) => {
+        const groupOfActivities = profileUser.activities?.find((group) => group.tripId === tripId);
+        if (!groupOfActivities) return 0;
+
+        return groupOfActivities.activityIds.reduce((sum: number, act: any) => {
+            return sum + (act?.price ?? 0);
+        }, 0);
+    };
 
     return (
         <div className="min-h-screen flex flex-col gap-6 p-10">
@@ -48,6 +55,7 @@ export default function Dashboard() {
                   <BoardingPass
                     key={trip._id}
                     trip={trip}
+                    planned={plannedForTrip(trip._id)}
                   />
                 ))}
             </div>
