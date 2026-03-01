@@ -34,7 +34,7 @@ export default function Dashboard() {
 
     // check for spending stats
     const plannedForTrip = (tripId: string) => {
-        const groupOfActivities = profileUser.activities?.find((group) => group.tripId === tripId);
+        const groupOfActivities = profileUser?.activities?.find((group) => group.tripId === tripId);
         if (!groupOfActivities) return 0;
 
         return groupOfActivities.activityIds.reduce((sum: number, act: any) => {
@@ -48,11 +48,11 @@ export default function Dashboard() {
             {/* conditional render for loading, request errors & no trips */}
             {loading && <h3 className="px-0 md:px-0">Loading your trips</h3>} {error && <h3>Uh oh... There was a problem getting your trips!</h3>}
             {!profileUser && <h3>No user data. Please log back in.</h3>}
-            {profileUser && profileUser.trips.length === 0 && <h3>You have no trips yet. Let's start planning!</h3>}
+            {profileUser && profileUser?.trips.length === 0 && <h3>You have no trips yet. Let's start planning!</h3>}
             
             <div className="flex flex-col gap-6 px-[10vw] md:px-[20vw]">
                 {/* slice it and map them */}
-                {profileUser && profileUser.trips.length > 0 && profileUser.trips.slice(0, 3).map((trip) => (
+                {profileUser && profileUser?.trips.length > 0 && profileUser.trips.slice(0, 3).map((trip) => (
                     <BoardingPass
                         key={trip._id}
                         trip={trip}
