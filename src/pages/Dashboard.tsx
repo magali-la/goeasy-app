@@ -32,10 +32,6 @@ export default function Dashboard() {
         }
     }, [isAuthenticated]);
 
-    if (loading) return <div>Loading user...</div>;
-    if (error) return <div>Error: {error}</div>;
-    if (!profileUser) return <div>No user data</div>;
-
     // check for spending stats
     const plannedForTrip = (tripId: string) => {
         const groupOfActivities = profileUser.activities?.find((group) => group.tripId === tripId);
@@ -49,21 +45,25 @@ export default function Dashboard() {
     return (
         <div className="min-h-screen flex flex-col gap-6 p-10">
             <h2>Your Recent Trips</h2>
-            {/* slice it and map them */}
+            {/* conditional render for loading, request errors & no trips */}
+            {loading && <h3 className="px-0 md:px-0">Loading your trips</h3>} {error && <h3>Uh oh... There was a problem getting your trips!</h3>}
+            {!profileUser && <h3>No user data. Please log back in.</h3>}
+            {profileUser && profileUser.trips.length === 0 && <h3>You have no trips yet. Let's start planning!</h3>}
+            
             <div className="flex flex-col gap-6 px-[10vw] md:px-[20vw]">
-                {profileUser.trips.slice(0, 3).map((trip) => (
-                  <BoardingPass
-                    key={trip._id}
-                    trip={trip}
-                    planned={plannedForTrip(trip._id)}
-                  />
+                {/* slice it and map them */}
+                {profileUser && profileUser.trips.length > 0 && profileUser.trips.slice(0, 3).map((trip) => (
+                    <BoardingPass
+                        key={trip._id}
+                        trip={trip}
+                        planned={plannedForTrip(trip._id)}
+                    />
                 ))}
             </div>
-
             {/* add trips cta */}
-            <section aria-label="plan a new trip" className="flex flex-col md:flex-row justify-center gap-10 md:gap-20 items-center">
+            <section aria-label="plan a new trip" className="flex flex-col md:flex-row justify-center gap-10 md:gap-20 md:items-center">
                 <div className="flex flex-col gap-8">
-                    <h2 className="self-center">Ready to plan your next adventure?</h2>
+                    <h2 className="">Ready to plan your next adventure?</h2>
                     <h3>You don’t need a plan yet. Just a place you’d rather be.</h3>
                     <Button shape="md" label="Plan a new trip" className="bg-leaf w-fit self-center" onClick={() => navigate("/trips")}/>
                 </div>
