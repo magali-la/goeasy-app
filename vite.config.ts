@@ -9,4 +9,22 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+
+  // dummy proxy ONLY for development
+  // server: {
+  //   proxy: {
+  //     // /api routes
+  //     '/api': {
+  //       target: 'http://localhost:4001',
+  //       changeOrigin: true,
+  //       secure: false
+  //     },
+  //     // /auth routes
+  //     '/auth': {
+  //       target: 'http://localhost:4001',
+  //       changeOrigin: true,
+  //       secure: false
+  //     },
+  //   }
+  // }
 })
