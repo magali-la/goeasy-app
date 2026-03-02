@@ -45,12 +45,14 @@ export default function LoginForm() {
             navigate("/home");
 
         } catch (error: any) {
-            if (error.response) {
+            // use optional chaining - if the server isn't connected, there won't be a response
+            if (error.response?.data.message) {
                 // message with the error status & message sent from the backend
                 console.log(error.response.status, error.response.data.message);
+                setError(error.response.data.message);
             } else {
-                // generic error if not
-                console.error("Login failed", error);
+                // generic error if not having to do with password
+                setError("Something went wrong! Please try again.");
             } 
         }
     }
