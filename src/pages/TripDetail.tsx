@@ -42,7 +42,23 @@ export default function TripDetail() {
                 setStatus(response.data.status || "planning");
 
             } catch (error: any) {
-                setError(error.response.data.message);
+                // switch statements to determine type of error messages to display to the user
+                const errorStatus = error.response.status;
+
+                switch (errorStatus) {
+                    case 401:
+                        setError("unauthorized");
+                        break;
+                    case 403:
+                        setError("forbidden");
+                        break;
+                    case 404:
+                        setError("notfound");
+                        break;
+                    case 500:
+                        setError("general");
+                        break;
+                }
             } finally {
                 setLoading(false);
             }
@@ -111,9 +127,39 @@ export default function TripDetail() {
         }
     }
     // loading and error handlers
-    if (loading) return <div className="p-10">Loading trip...</div>;
-    if (error) return <div className="p-10">Error: {error}</div>;
-    if (!trip) return <div className="p-10">No trip found.</div>;
+    if (loading) return <h2 className="p-10">Loading trip...</h2>;
+    if (error) return (
+        <div className="m-10 p-10 bg-red-400 rounded-xl">
+            {/* general network or server errors */}
+            {error === "general" && (
+                <>
+                    <h2>Uh oh... There was a problem getting your trip!</h2>
+                    <h3>Please refresh or log back in.</h3>
+                </>
+            )}
+
+            {/* unauthorized error */}
+            {error === "unauthorized" && (
+                <>
+                    <h2>Uh oh... There was a problem getting your trip!</h2>
+                    <h3>Please log back in.</h3>
+                </>
+            )}
+            {error === "notfound" && (
+                <>
+                    <h2>Uh oh... This trip was not found!</h2>
+                    <h3>Please go back to your trips.</h3>
+                </>
+            )}
+            {error === "forbidden" && (
+                <>
+                    <h2>Uh oh... Not authorized to view this trip.</h2>
+                    <h3>Please go back to your trips.</h3>
+                </>
+            )}
+            <p>{error}</p>
+        </div>
+    );
 
     // activities is populated in this response so use it to map the data - optionl chaining for safety
     const activities = trip.activities?.map((activity: any) => activity.activityId) ?? [];
