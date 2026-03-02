@@ -42,7 +42,7 @@ export default function TripDetail() {
                 setStatus(response.data.status || "planning");
 
             } catch (error: any) {
-                // switch statements to determine type of error messages to display to the user
+                // switch statements to determine type of error messages to display to the user - add optional chaining, network issues won't have a response
                 const errorStatus = error.response.status;
 
                 switch (errorStatus) {
@@ -58,6 +58,8 @@ export default function TripDetail() {
                     case 500:
                         setError("general");
                         break;
+                    default:
+                        setError("general");
                 }
             } finally {
                 setLoading(false);
@@ -126,6 +128,21 @@ export default function TripDetail() {
             alert("Failed to delete this activity");
         }
     }
+
+    // format the city for the button
+    function formatCity(city: string) {
+        switch (city) {
+            case "nyc":
+                return "NYC";
+            case "atlanta":
+                return "Atlanta";
+            case "lyon":
+                return "Lyon";
+            default:
+                return city
+        }
+    }
+
     // loading and error handlers
     if (loading) return <h2 className="p-10">Loading trip...</h2>;
     if (error) return (
@@ -216,8 +233,9 @@ export default function TripDetail() {
 
             <h2 className="text-2xl font-semibold">Planned Activities</h2>
             <section className=" grid grid-cols-1 md:grid-cols-3 gap-6" aria-label={`List of activities for ${tripId}`}>
-                    {/* map activities objects and get the right data */}
-                    {activities.map((activity) => (
+                {/* map activities objects and get the right data */}
+                {activities.length > 0 ? (
+                    activities.map((activity) => (
                         <motion.div key={activity._id} className="h-fit rounded-2xl overflow-hidden shadow-md" whileHover={{ scale: 1.05, transition: { duration: 0.5 }}}>
                             {/* image */}
                             <img src={activity.imageUrl} alt={`Image of ${tripId}`} className="h-36 w-full object-cover"/>
@@ -249,9 +267,14 @@ export default function TripDetail() {
                                 <Button shape="sm" label="Delete from Trip" className="bg-red-400 mt-2 self-center" onClick={() => handleDeleteActivity(activity._id)}/>
                             </div>
                         </motion.div>
-                    ))}
-                </section>
-
+                    ))
+                ) : (
+                    <div>
+                        <h3 className="opacity-70">No activities yet. Want to start planning?</h3>
+                        <Button shape="sm" label={`Explore activities in ${formatCity(trip.city)}`} className="bg-sea mt-2" onClick={() => navigate(`/explore/${trip.city}`)}/>
+                    </div>
+                )}
+            </section>
         </div>
     )
 }
