@@ -29,17 +29,12 @@ export default function Trips() {
 
     }, [isAuthenticated]);
 
-    // add guards for loading and errors
-    if (loading) return <div className="p-10">Loading...</div>;
-    if (error) return <div className="p-10">Error: {error}</div>;
-    if (!profileUser) return <div className="p-10">No user data</div>;
-
-    // use nonnull assertion
-    const trips = profileUser!.trips ?? [];
+    // use optional chaining in case user isn't loaded
+    const trips = profileUser?.trips ?? [];
 
     // check for spending stats
     const plannedForTrip = (tripId: string) => {
-        const groupOfActivities = profileUser.activities?.find((group) => group.tripId === tripId);
+        const groupOfActivities = profileUser?.activities?.find((group) => group.tripId === tripId);
         if (!groupOfActivities) return 0;
 
         return groupOfActivities.activityIds.reduce((sum: number, act: any) => {
@@ -62,25 +57,37 @@ export default function Trips() {
             </div>
 
             <h2>Your Trips</h2>
+            {loading && <h3 className="px-0 md:px-0">Loading your trips</h3>}
+            {/* conditional loading messages */}
+            {error && (
+                <div className="p-6 bg-red-400 rounded-xl">
+                    <h3>Uh oh... There was a problem getting your trips!</h3>
+                    <h3>Please refresh or log back in.</h3>
+                </div>
+            )}
             {/* user's trips - all of the boarding passes they can browse */}
             <div className="px-[10vw] md:px-[20vw]">
-                {trips.length === 0 ? (
-                    <p className="opacity-70">No trips yet — create one above.</p>
-                ) : (
+                {!loading && !error && profileUser && trips.length === 0 &&
+                    <h3 className="opacity-70">No trips yet — create one above.</h3>
+                }
+                {!loading && !error && profileUser && trips.length > 0 && (
                     <div className="flex flex-col gap-4">
-                    {trips.map((trip) => (
-                        <BoardingPass
-                            key={trip._id}
-                            trip={trip}
-                            planned={plannedForTrip(trip._id)}
-                        />
-                    ))}
+                        {trips.map((trip) => (
+                            <BoardingPass
+                                key={trip._id}
+                                trip={trip}
+                                planned={plannedForTrip(trip._id)}
+                            />
+                        ))}
                     </div>
                 )}
             </div>
             {/* trip stats - how many they have planned, how much money they intend to spend and their budgets */}
             <h2>Trips Stats</h2>
-            <p>You have {totalTrips} trip{totalTrips !== 1 && "s"} planned and{" "} {totalActivities} activit{totalActivities === 1 ? "y" : "ies"} in total.</p>
+            {error && <p className="opacity-70">There was an error loading your stats. Please refresh or log back in.</p>}
+            {profileUser && trips.length > 0 && 
+                <p>You have {totalTrips} trip{totalTrips !== 1 && "s"} planned and{" "} {totalActivities} activit{totalActivities === 1 ? "y" : "ies"} in total.</p>
+            }
         
         </div>
     )

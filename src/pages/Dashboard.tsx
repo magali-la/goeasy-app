@@ -46,8 +46,12 @@ export default function Dashboard() {
         <div className="min-h-screen flex flex-col gap-6 p-10">
             <h2>Your Recent Trips</h2>
             {/* conditional render for loading, request errors & no trips */}
-            {loading && <h3 className="px-0 md:px-0">Loading your trips</h3>} {error && <h3>Uh oh... There was a problem getting your trips!</h3>}
-            {!profileUser && <h3>No user data. Please log back in.</h3>}
+            {loading && <h3 className="px-0 md:px-0">Loading your trips</h3>} {error && (
+                <div className="p-6 bg-red-400 rounded-xl">
+                    <h3>Uh oh... There was a problem getting your trips!</h3>
+                    <h3>Please refresh or log back in.</h3>
+                </div>
+            )}
             {profileUser && profileUser?.trips.length === 0 && <h3>You have no trips yet. Let's start planning!</h3>}
             
             <div className="flex flex-col gap-6 px-[10vw] md:px-[20vw]">
