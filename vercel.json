@@ -6,6 +6,10 @@
       "destination": "https://goeasy-backend.onrender.com/api/:path*"
     },   
     {
+      "source": "/auth/:path*",
+      "destination": "https://goeasy-backend.onrender.com/auth/:path*"
+    },   
+    {
       "source": "/:path*",
       "destination": "/"
     }
