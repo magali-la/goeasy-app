@@ -1,8 +1,17 @@
 import { motion } from "motion/react"
 import Button from "../components/Button"
 import { useNavigate } from "react-router"
+import { useEffect } from "react";
+import { ping } from "../services/ping";
+
 export default function Landing() {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // ping render
+        ping();
+    }, []);
+
     return (
         <div className="min-h-screen p-6 md:p-10 flex flex-col bg-linear-to-br from-leaf via-liteberry to-lav">
             <div className="p-8  rounded-2xl h-2/5 flex flex-col gap-4 justify-around">

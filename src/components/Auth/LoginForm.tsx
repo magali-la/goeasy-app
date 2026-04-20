@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../../contexts/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { axiosInstance } from "../../services/axios";
 import Button from "../Button";
+import { ping } from "../../services/ping";
 
 export default function LoginForm() {
     // controlled inputs
@@ -16,6 +17,12 @@ export default function LoginForm() {
     // hooks
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    // use effect to ping render
+    useEffect(() => {
+        // ping render
+        ping();
+    }, []);
 
     // submit form handler
     async function handleLogin(event: React.SubmitEvent<HTMLFormElement>) {
