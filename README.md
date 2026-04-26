@@ -18,6 +18,10 @@ To view the backend repo go here: https://github.com/magali-la/goeasy-backend
 * [Project Reflections](#reflections)
     * [Authentication](#auth)
     * [Dev vs. Production Environment](#environment)
+* [Engineering Challenges & Infrastructure](#challenge)
+    * [Third-Party Cookies](#cookies)
+    * [Server Cold Start on Render](#render)
+    * [Preventing Cumulative Layout Shift](#layout)
 * [Deployment](#deployment)
 * [About the Author](#author)
 
@@ -61,6 +65,7 @@ Planned features include:
 - Visual breakdown of budgets and estimated spending data
 - Collaborative trip planning experience
 - Filter activities by their tags (e.g. art, food, music)
+- Skeleton UI for loading data-dependent components
 
 ## <a name="design"></a>Design Process & Backend Planning
 GoEasy was designed around the idea of flexible, budget-first travel planning. Instead of centering the experience around booking logistics, the design focuses on exploration of curated activities. The design focused on the end-user experience in visualizing what a trip could look like and how affordable it can be before committing.
@@ -102,6 +107,50 @@ One of the main tradeoffs in this project involved how authentication tokens wer
 During development, I used Vite’s proxy configuration to simulate same-origin API requests. Later, I introduced a `baseURL` environment variable in my Axios instance to better support the cookie-based authentication strategy I chose.
 
 Doing this early on allowed me better understand how to properly configure `CORS` in the backend and made it easier to transition to a production-ready application.
+
+## <a name="challenge"></a>Engineering Challenges & Infrastructure
+### <a name="cookies"></a>Third-Party Cookies
+Hosting the frontend and backend on Vercel and Render created a cross-origin cookie constraint that blocked functionality in both incognito mode and mobile browsers. This perpetual error state after login or signup stops users from accessing their data across browsing modes.
+
+To solve this, I implemented a reverse proxy strategy using Vercel rewrites, where Vercel acts as the middleman to communicate with the server hosted on Render once an `/api` or `/auth` route is visited.
+
+* This included removing the hardcoded `baseURL` pointing to my Render domain in my Axios instance so the browser automatically applies the Vercel domain to all requests. With the proxy, the browser only communicates with Vercel when receiving a server response, so the cookie origin is stamped with Vercel
+* To maintain this flow for Google OAuth, I used a relative path in my environment variables to ensure the browser applies the Vercel domain to `/auth/google` routes and triggers the proxy
+* Additionally, I updated the redirect URI in Google Cloud Console to ensure the `Passport.js` authentication flow is always using the Vercel domain and maintaining the cookie's Vercel origin
+
+These structural changes allowed me to maintain my security strategy, ensure users can use the app when they are on-the-go, and accommodate users' browser security preferences.
+
+### <a name="render"></a>Server Cold Start on Render
+Hosting my API service on the free tier of Render meant there would be limitations, specifically server cold start delays when the server powers down due to periods of inactivity. To reduce delays for the user, I implemented two adjustments:
+
+* I implemented a `ping` request that triggers when visiting the landing, signup, and login pages. This is intended to be the first request to wake my server up on Render before user login or signup. This effectively reduces the perceived waiting time for the user if it is a cold start
+* I fixed the `timeout` on my Axios configuration from 1s to 15s so that the request would not be cancelled too soon while Render is booting up the server, while still including a reasonable timeout for other server issues
+
+While these issues unfortunately do not solve every use case (a user quickly trying to login while the server is inactive), error handling in the UI notifies the user to try again. I am currently exploring other opportunities for more robust loading or error handling to reduce the effects of cold start on the user experience.
+
+### <a name="layout"></a>Preventing Cumulative Layout Shift
+My initial implementation for handling loading and authentication states was causing cumulative layout shift (CLS), and unpleasant UI flashes for users. In order to create a more seamless user experience, I focused on these changes:
+
+#### NavBar Authentication State
+
+* When a user visits or refreshes the app, the transition between the non-authenticated and authenticated nav bar was flashing due to the initial `isAuthenticated` state being false before an auth check is resolved
+* In the `AuthProvider`, I had already implemented an `isCheckingAuth` state which is used to determine loading states for protected routes
+
+To solve this, I used `isCheckingAuth` state in my nav rendering logic to wait until the auth check resolves to fade in the correct nav links on the nav bar, using Framer Motion. 
+
+One main tradeoff to this solution is when cold start delays cause the nav links section to take longer to render due to the auth check. 
+
+#### Loading on Protected Routes for Authenticated Users
+
+* When refreshing a protected route, the `ProtectedRoute.tsx` component would conditionally render a simple line of text when `isCheckingAuth` is true, which would cause UI flashes between the text and final page content
+* I replaced the text with a full-page conditional loading animation with a centered bouncing logo
+* To avoid UI flashes on fast networks, I set a `minLoadTimeReached` state using a `useEffect` and `setTimeout`, displaying the animation for at least 1s
+* The conditional logic ensures that the loading view on refreshes will be removed only when both the auth check successfully resolves and the minimum load time of 1s has been reached
+
+These changes allow for a smoother and more intentional transition for users regardless of network speed.
+
+#### Data-Dependent Component Loading
+CLS is currently high while waiting for data-reliant sections of a page to load (ie. the Dashboard's recent trips section at the top of the page), briefly flashing loading text states. I am currently working on a solution with skeleton UI components, which make the transition to the fully loaded data more seamless for the user.
 
 ## <a name="deployment"></a>Deployment
 This app is hosted on Vercel
