@@ -13,20 +13,21 @@ export default function Landing() {
     }, []);
 
     return (
-        <div className="min-h-screen p-6 md:p-10 flex flex-col bg-linear-to-br from-leaf via-liteberry to-lav">
-            <div className="p-8  rounded-2xl h-2/5 flex flex-col gap-4 justify-around">
-                <h1 className="text-5xl md:text-8xl">WELCOME TO GOEASY</h1>
-                <h3 className="text-4xl md:text-6xl">Design Your Trip Before You Spend a Dollar</h3>
-                <p className="text-2xl">Curate activities in advance to avoid overpriced tourist traps and see your estimated spending update in real time.</p>
-            </div>
+        <div className="min-h-screen items-start p-6 sm:p-8 md:p-10 flex flex-col bg-linear-to-br from-leaf via-liteberry to-lav">
+            {/* hero section */}
+            <section className="flex flex-col md:flex-row md:gap-10 justify-between h-fit" aria-labelledby="hero-heading">
+                <div className="md:basis-1/2 lg:basis-3/5 rounded-2xl flex flex-col gap-6 md:gap-10 justify-center">
+                    <h1 id="hero-heading" className="text-4xl md:text-7xl">Design Your Trip <br /> <span className="text-mustard">Before You Spend a Dollar</span></h1>
+                    <p className="text-xl md:text-2xl">Curate budget-friendly activities in advance with GoEasy to avoid overpriced tourist traps and see your estimated spending update in real time!</p>            
+                    <Button shape="md" label="Signup Now!" className="bg-lav w-fit self-center mb-6" onClick={() => navigate("/signup")}/>
+                </div>
 
-            <Button shape="md" label="Signup Now!" className="bg-lav w-fit self-center mb-4" onClick={() => navigate("/signup")}/>
-
-            <section  aria-label="pictures of people traveling">
-                <motion.div whileHover={{ scale: 1.05, transition: { duration: 0.5 }}}>
-                    <img src="https://images.unsplash.com/photo-1685173864597-92247716fd59?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="woman biking in Lyon, France along the banks of the Saone river" className="rounded-3xl w-full md:w-[25vw] place-self-center"/>
-                </motion.div>
-
+                <div className="md:basis-1/2 lg:basis-2/5 flex items-center justify-center">
+                    <motion.img 
+                        whileHover={{ scale: 0.98, transition: { duration: 0.4 }}} 
+                        src="https://images.unsplash.com/photo-1650366215170-3f45bea0d8e5?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="woman with vibrant orange sweater and backpack crossing a vibrant new york city street" className="rounded-3xl object-cover max-h-100 md:max-h-140 aspect-square md:aspect-auto"
+                    />
+                </div>
             </section>
         </div>
     )
