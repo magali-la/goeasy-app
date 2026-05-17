@@ -25,7 +25,7 @@ export function ProtectedRoute() {
     // loading logic - it needs to show loader while either isChecking is true or if the minloadtime hasn't been reached yet / this only triggers on refresh
     if (isCheckingAuth || !minLoadTimeReached) {
         return (
-            <div className="h-screen fixed inset-0 flex flex-col justify-center items-center">
+            <div className="h-screen flex flex-col justify-center items-center">
                 <motion.img 
                     animate={{ y: [0, -5, 0], opacity: [1, 0.5, 1] }}
                     transition={{ repeat: Infinity, duration: 2}}
