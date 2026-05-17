@@ -59,8 +59,8 @@
     }
 }
 
-body {
-    @apply bg-cream text-dark font-kanit;
+html, body {
+    @apply bg-cream text-dark font-kanit scroll-smooth;
 }
 
 /* header styling */
@@ -76,4 +76,10 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 /* button behavior */
 button {
     @apply cursor-pointer;
+}
+
+/* link behavior */
+/* footer links */
+footer a{
+    @apply hover:underline hover:font-medium transition-all duration-200;
 }

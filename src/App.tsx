@@ -10,6 +10,7 @@ import Trips from './pages/Trips'
 import TripDetail from './pages/TripDetail'
 import Explore from './pages/Explore'
 import ExploreCity from './pages/ExploreCity'
+import Footer from './components/Footer'
 
 function App() {
 	return (
@@ -42,6 +43,7 @@ function App() {
 					</Route>
 				</Route>
 			</Routes>
+			<Footer/>
 		</>
 	)
 }
