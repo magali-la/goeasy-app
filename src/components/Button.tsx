@@ -9,6 +9,7 @@ const buttonVariants = tv({
     // all button variants
     variants: {
         shape: {
+            xs: 'px-4 py-2 text-base font-medium rounded-full',
             sm: 'px-6 py-2 text-lg font-medium rounded-full',
             md: 'px-12 py-3 text-xl font-medium rounded-full',
             auth: 'px-14 py-4 text-xl rounded-3xl w-full bg-berry text-cream',

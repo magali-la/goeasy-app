@@ -83,3 +83,14 @@ button {
 footer a{
     @apply hover:underline hover:font-medium transition-all duration-200;
 }
+
+/* boarding pass styles */
+/* the text details */
+.boarding-text {
+  @apply flex items-center font-medium;
+}
+
+/* the icon span */
+.boarding-icon {
+  @apply opacity-80 w-12 text-berry text-xl shrink-0;
+}
