@@ -47,7 +47,10 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen flex flex-col gap-6 p-10">
-            <h2>Your Recent Trips</h2>
+            <div className="flex flex-row gap-3 sm:gap-6 justify-between items-end sm:items-center sm:justify-normal">
+                <h2>Your Recent Trips</h2>
+                <Button shape="xs" label="View All" className="bg-lav shrink-0" onClick={() => navigate("/trips")} />
+            </div>
             {/* conditional render for loading, request errors & no trips */}
             {loading && <h3 className="px-0 md:px-0">Loading your trips</h3>} {error && (
                 <div className="p-6 bg-red-400 rounded-xl">
