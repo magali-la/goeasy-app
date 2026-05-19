@@ -42,6 +42,9 @@ export default function Dashboard() {
         }, 0);
     };
 
+    // logic for recent trips - 4 most recently updated that aren't archived - sort with locale compare directly since mongodb uses ISO format to avoid ts whining - fallback empty
+    const recentTrips = profileUser?.trips.filter(trip => trip.status !== 'archived').sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 4) || [];
+
     return (
         <div className="min-h-screen flex flex-col gap-6 p-10">
             <h2>Your Recent Trips</h2>
@@ -52,11 +55,11 @@ export default function Dashboard() {
                     <h3>Please refresh or log back in.</h3>
                 </div>
             )}
-            {profileUser && profileUser?.trips.length === 0 && <h3>You have no trips yet. Let's start planning!</h3>}
+            {!loading && recentTrips.length === 0 && <h3>You have no trips yet. Let's start planning!</h3>}
             
-            <div className="flex flex-col gap-6 px-0 sm:px-[10vw] md:px-[10vw] lg:grid lg:grid-cols-2 lg:px-0 3xl:px-[10vw] border-2">
-                {/* slice it and map them */}
-                {profileUser && profileUser?.trips.length > 0 && profileUser.trips.slice(0, 3).map((trip) => (
+            <div className="flex flex-col gap-6 px-0 sm:px-[10vw] md:px-[10vw] lg:grid lg:grid-cols-2 lg:px-0 3xl:px-[10vw]">
+                {/* map recent trips */}
+                {recentTrips.map((trip) => (
                     <BoardingPass
                         key={trip._id}
                         trip={trip}
