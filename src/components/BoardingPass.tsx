@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import type { Trip } from "../types";
 import Button from "./Button";
+import TripStatusTag from "./TripStatusTag";
 
 type BoardingPassProps = {
     trip: Trip;
@@ -72,8 +73,8 @@ export default function BoardingPass({ trip, planned }: BoardingPassProps) {
                         </p>
                     </div>
 
-                    {/* status pill */}
-                    <span className="text-sm px-3 py-1 rounded-full bg-bluegreen text-green-900">{trip.status}</span>
+                    {/* status tag */}
+                    <TripStatusTag status={trip.status} />
                 </div>
             </div>
 
