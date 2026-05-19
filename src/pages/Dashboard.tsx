@@ -54,7 +54,7 @@ export default function Dashboard() {
             )}
             {profileUser && profileUser?.trips.length === 0 && <h3>You have no trips yet. Let's start planning!</h3>}
             
-            <div className="flex flex-col gap-6 px-[10vw] md:px-[20vw]">
+            <div className="flex flex-col gap-6 px-0 sm:px-[10vw] md:px-[10vw] lg:grid lg:grid-cols-2 lg:px-0 3xl:px-[10vw] border-2">
                 {/* slice it and map them */}
                 {profileUser && profileUser?.trips.length > 0 && profileUser.trips.slice(0, 3).map((trip) => (
                     <BoardingPass

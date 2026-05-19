@@ -11,7 +11,7 @@ type BoardingPassProps = {
 
 // convert to readable format
 const cityLabel: Record<Trip["city"], string> = {
-    nyc: "New York City",
+    nyc: "NYC",
     atlanta: "Atlanta",
     lyon: "Lyon",
 };
@@ -34,7 +34,7 @@ export default function BoardingPass({ trip, planned }: BoardingPassProps) {
         </div>
 
         {/* main section */}
-        <div className="grid grid-cols-1 md:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 h-full">
             {/* left part */}
             <div className="md:col-span-2 p-4">
                 {/* info div */}
@@ -58,14 +58,14 @@ export default function BoardingPass({ trip, planned }: BoardingPassProps) {
                             </span>
                         </p>
                         {/* activities */}
-                        <p className="boarding-text">
+                        <p className="boarding-text text-nowrap">
                             <span className="boarding-icon">
                                 <i className="bi bi-emoji-sunglasses"></i>
                             </span>
                             <span>{activitiesPlanned} Activit{activitiesPlanned !== 1 ? 'ies' : 'y'}</span>
                         </p>
                         {/* travelers */}
-                        <p className="boarding-text">
+                        <p className="boarding-text text-nowrap">
                             <span className="boarding-icon">
                                 <i className="bi bi-person-vcard"></i>
                             </span>

@@ -39,6 +39,9 @@
 
     /* landmark label */
     --color-sea: #68C4CF;
+
+    /* BREAKPOINTS */
+    --breakpoint-3xl: 107rem;
 }
 
 @layer base {
