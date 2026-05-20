@@ -22,6 +22,7 @@ To view the backend repo go here: https://github.com/magali-la/goeasy-backend
     * [Third-Party Cookies](#cookies)
     * [Server Cold Start on Render](#render)
     * [Preventing Cumulative Layout Shift](#layout)
+    * [Conditional Scroll Restoration](#scroll)
 * [Deployment](#deployment)
 * [About the Author](#author)
 
@@ -151,6 +152,30 @@ These changes allow for a smoother and more intentional transition for users reg
 
 #### Data-Dependent Component Loading
 CLS is currently high while waiting for data-reliant sections of a page to load (ie. the Dashboard's recent trips section at the top of the page), briefly flashing loading text states. I am currently working on a solution with skeleton UI components, which make the transition to the fully loaded data more seamless for the user.
+
+### <a name="scroll"></a>Conditional Scroll Restoration
+I implemented `useScrollRestoration` custom hook which holds the architecture for conditional scroll restoration depending on the navigation type tracked by `React Router`'s `useNavigationType()` hook. The nav type of `pop`, when a user manually goes back or forward with browser controls, should restore the user's scroll position. Fresh clicks with nav type of `push` or even `replace` should always set the user to the top of the page.
+
+#### Scroll Position Logging & Restoration
+A `useRef`'s current field is set to an object holding `key-value pairs` with the path name string and an object with the scroll coordinates:
+``` 
+{
+    current: {
+        "pathname": { left: window.scrollX, top: window.scrollY }
+    }
+}
+```
+
+This ref updates in the `useEffect`'s cleanup function, which triggers right before a route change to log the latest coordinates. When the user goes back or forward with browser controls, the conditional check for `pop` navigation triggers `window.scrollTo()` with the coordinates stored under that pathname. If not found or a different nav type, it will default to the top.
+
+#### Problem: Final DOM height is not ready before API fetch resolves
+The first implementation did not consider that the DOM height might not be final once the `useEffect` fires. The scroll position should only be restored once an API fetch resolves and injects either the correct data-dependent components or the error block in the DOM to properly calculate height and the correct position. This caused inconsistent scroll restoration before full page data loads.
+
+#### Potential Solution: Using an Axios Interceptor to Track Active Requests
+Using information found in this [Medium article](https://sandip-shrestha.medium.com/axios-interceptors-with-practical-examples-e3e957b3653f), there is an opportunity to use an `Axios Interceptor` to track active requests. This could effectively determine when all expected DOM elements for data-dependent sections of a page are filled with expected components or the error blocks. I am still working on a solutions via a potential event listener and dispatch to delay scroll restoration until fetches resolve.
+
+- This potential stategy tracking active requests is ideal, as it avoids a major architectural transition from the application's current use of declarative mode of React Router to framework or data mode, which better support global loading states and scroll restoration.
+- The current implementation for `pop` navigation types defaults to the top of the page, which is more pleasant to the user experience than standard SPA scroll behavior.
 
 ## <a name="deployment"></a>Deployment
 This app is hosted on Vercel
