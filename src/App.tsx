@@ -11,8 +11,12 @@ import TripDetail from './pages/TripDetail'
 import Explore from './pages/Explore'
 import ExploreCity from './pages/ExploreCity'
 import Footer from './components/Footer'
+import { useScrollRestoration } from './hooks/useScrollRestoration'
 
 function App() {
+	// scroll poosition restore, cann the hook
+	useScrollRestoration();
+	
 	return (
 		<>
 			<NavBar/>
