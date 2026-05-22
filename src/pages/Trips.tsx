@@ -32,6 +32,9 @@ export default function Trips() {
     // use optional chaining in case user isn't loaded
     const trips = profileUser?.trips ?? [];
 
+    // active trips only - non-archived will be used for stats normal display
+    const activeTrips = trips.filter(trip => trip.status !== 'archived') || [];
+
     // check for spending stats
     const plannedForTrip = (tripId: string) => {
         const groupOfActivities = profileUser?.activities?.find((group) => group.tripId === tripId);
@@ -42,10 +45,10 @@ export default function Trips() {
         }, 0);
     };
 
-    // check for staats
-    const totalTrips = trips.length;
+    // check for stats
+    const totalTrips = activeTrips.length;
     // get the total number of activities across all trips
-    const totalActivities = trips.reduce((sum, trip) => {
+    const totalActivities = activeTrips.reduce((sum, trip) => {
         return sum + (trip.activities?.length ?? 0);
     }, 0);
 
@@ -67,12 +70,12 @@ export default function Trips() {
             )}
             {/* user's trips - all of the boarding passes they can browse */}
             <div className="px-[10vw] md:px-[20vw]">
-                {!loading && !error && profileUser && trips.length === 0 &&
+                {!loading && !error && profileUser && activeTrips.length === 0 &&
                     <h3 className="opacity-70">No trips yet — create one above.</h3>
                 }
-                {!loading && !error && profileUser && trips.length > 0 && (
+                {!loading && !error && profileUser && activeTrips.length > 0 && (
                     <div className="flex flex-col gap-4">
-                        {trips.map((trip) => (
+                        {activeTrips.map((trip) => (
                             <BoardingPass
                                 key={trip._id}
                                 trip={trip}
@@ -86,7 +89,7 @@ export default function Trips() {
             <h2>Trips Stats</h2>
             {error && <p className="opacity-70">There was an error loading your stats. Please refresh or log back in.</p>}
             {profileUser && trips.length > 0 && 
-                <p>You have {totalTrips} trip{totalTrips !== 1 && "s"} planned and{" "} {totalActivities} activit{totalActivities === 1 ? "y" : "ies"} in total.</p>
+                <p>You have {totalTrips} trip{totalTrips !== 1 && "s"} planned and {totalActivities} activit{totalActivities === 1 ? "y" : "ies"} in total.</p>
             }
         
         </div>
