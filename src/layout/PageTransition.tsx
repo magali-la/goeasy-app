@@ -1,4 +1,4 @@
-import { AnimatePresence, easeIn, easeInOut, easeOut, motion } from "motion/react"
+import { AnimatePresence, easeOut, motion } from "motion/react"
 import { useLocation } from "react-router"
 
 // this is being used as an entire wrapper around the Routes in App.tsx. it needs children, not outlet to correctly access the page component in the route children
