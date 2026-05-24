@@ -53,7 +53,7 @@ export default function Trips() {
     }, 0);
 
     return (
-        <div className="min-h-screen p-10 flex flex-col gap-4">
+        <div className="min-h-screen p-10 flex flex-col gap-6">
             {/* CTA for form - conditional view based off if the user has trips or not yet */}
             <div className="px-40 self-center">
                 <TripForm onCreatedTrip={fetchUser}/>
@@ -69,12 +69,12 @@ export default function Trips() {
                 </div>
             )}
             {/* user's trips - all of the boarding passes they can browse */}
-            <div className="px-[10vw] md:px-[20vw]">
+            <div className="">
                 {!loading && !error && profileUser && activeTrips.length === 0 &&
                     <h3 className="opacity-70">No trips yet — create one above.</h3>
                 }
                 {!loading && !error && profileUser && activeTrips.length > 0 && (
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-6 px-0 sm:px-[10vw] md:px-[10vw] lg:grid lg:grid-cols-2 lg:px-0 3xl:px-[10vw]">
                         {activeTrips.map((trip) => (
                             <BoardingPass
                                 key={trip._id}
