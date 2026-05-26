@@ -17,7 +17,7 @@ export default function TripStatusTag({ status }: TripStatusTagProps) {
     const { color, icon } = statusVariants[stat];
 
     return (
-        <span className={`flex flex-row items-center justify-between rounded-lg gap-2.5 py-1.5 px-4 border-2 border-black/10 ${color}`}>
+        <span className={`flex flex-row items-center justify-between rounded-lg gap-2.5 py-1.5 px-4 border-2 border-black/10 w-fit ${color}`}>
             <i className={icon}></i>
             <p className="capitalize">{stat}</p>
         </span>

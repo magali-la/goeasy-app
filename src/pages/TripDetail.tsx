@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, Link } from "react-router";
 import { axiosInstance } from "../services/axios";
 import Button from "../components/Button";
 import { motion } from "motion/react";
+import type { Trip } from "../types";
+import TripStatusTag from "../components/TripStatusTag";
 
 export default function TripDetail() {
     // take the tripId from the params
@@ -12,7 +14,7 @@ export default function TripDetail() {
     // set a loading states and errors
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [trip, setTrip] = useState<any>(null);
+    const [trip, setTrip] = useState<Trip | null>(null);
 
     // state for editing trip
     const [isEditing, setIsEditing] = useState(false);
@@ -144,7 +146,12 @@ export default function TripDetail() {
     }
 
     // loading and error handlers
-    if (loading) return <h2 className="p-10">Loading trip...</h2>;
+    if (loading) return (
+        <div className="min-h-screen">
+            <h2 className="p-10">Loading trip...</h2>
+        </div>
+    );
+
     if (error) return (
         <div className="m-10 p-10 bg-red-400 rounded-xl">
             {/* general network or server errors */}
@@ -179,19 +186,34 @@ export default function TripDetail() {
     );
 
     // activities is populated in this response so use it to map the data - optionl chaining for safety
-    const activities = trip.activities?.map((activity: any) => activity.activityId) ?? [];
+    const activities = trip?.activities?.map((activity: any) => activity.activityId) ?? [];
 
     return (
         <div className="min-h-screen p-10 flex flex-col gap-4">
+            {/* use optional chaining and non null coalescing for fallback for null trip type - the error and loading returns catch this anyway, but need it to avoid TS errors */}
             <div>
-                <h1>{trip.title}</h1>
-                <h3 className="">
-                    {new Date(trip.startDate).toLocaleDateString()} –{" "}
-                    {new Date(trip.endDate).toLocaleDateString()}
+                <Link to="/trips" className="flex gap-2 mb-4 hover:font-medium transition-all duration-100 w-fit">
+                    <i className="bi bi-arrow-left flex self-center"></i>
+                    Back to Trips
+                </Link>
+                <h1 className="text-2xl md:text-3xl mb-2 md:mb-3">{trip?.title}</h1>
+                <h2 className="flex flex-row gap-4 text-xl md:text-2xl">
+                    <i className="bi bi-geo-fill opacity-80 text-berry"></i>
+                    {formatCity(trip?.city ?? "")}
+                </h2>
+
+                {/* status tag */}
+                <div className="my-2.5 md:my-4">
+                    <TripStatusTag status={trip?.status ?? "planning"} />
+                </div>
+
+                <h3 className="text-lg md:text-xl mb-2 italic">
+                    {new Date(trip?.startDate ?? "").toLocaleDateString()} – {new Date(trip?.endDate ?? "").toLocaleDateString()}
                 </h3>
+                <h4 className="text-base md:text-lg">{trip?.description}</h4>
             </div>
             {/* conditionl label based off editing status */}
-            <Button shape="md" label={isEditing ? "Close" : "Edit Trip"} className="bg-lav w-fit" onClick={() => setIsEditing((v) => !v)}/>
+            <Button shape="sm" label={isEditing ? "Close" : "Edit Trip"} className="bg-lav w-fit" onClick={() => setIsEditing((v) => !v)}/>
 
             {/* conditionl render of the edit form */}
             {isEditing && (
@@ -271,7 +293,7 @@ export default function TripDetail() {
                 ) : (
                     <div>
                         <h3 className="opacity-70">No activities yet. Want to start planning?</h3>
-                        <Button shape="sm" label={`Explore activities in ${formatCity(trip.city)}`} className="bg-sea mt-2" onClick={() => navigate(`/explore/${trip.city}`)}/>
+                        <Button shape="sm" label={`Explore activities in ${formatCity(trip?.city ?? "")}`} className="bg-sea mt-2" onClick={() => navigate(`/explore/${trip?.city ?? ""}`)}/>
                     </div>
                 )}
             </section>
