@@ -90,6 +90,10 @@ export default function ExploreCity() {
         }
     }
 
+    // get only trips associated with the city in question for the dropdown 
+    const cityTrips = userTrips.filter(trip => trip.city === cityId);
+    console.log(cityTrips);
+
     return (
         <div className="min-h-screen p-10 flex flex-col gap-4">
             <h1 className="capitalize">Explore Activities in {cityId}</h1>
@@ -99,12 +103,12 @@ export default function ExploreCity() {
             {error && <p className=" text-red-800">{error}</p>}
 
             {/* conditional dropdown menu to add to a trip */}
-            {userTrips.length > 0 ? (
+            {cityTrips.length > 0 ? (
                 <div className="flex items-center gap-3">
                     <p className="font-medium">Add activities to:</p>
                     <select value={selectedTripId} onChange={(event) => setSelectedTripId(event.target.value)} className="rounded-lg px-3 py-2">
                         {/* map the user's trips as options for the dropdown */}
-                        {userTrips.map((trip) => (
+                        {cityTrips.map((trip) => (
                             <option key={trip._id} value={trip._id}>
                                 {trip.title}
                             </option>
@@ -112,7 +116,7 @@ export default function ExploreCity() {
                     </select>
                 </div>
             ) : (
-                <p className="opacity-70">No trips yet — create one in Trips first.</p>
+                <p className="opacity-70">No trips yet for <span className={cityId === 'nyc' ? "uppercase" : "capitalize"}>{cityId}</span> create one in Trips first.</p>
             )}
 
             {/* share the activities when it's not loading or error */}
