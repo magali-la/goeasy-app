@@ -27,12 +27,13 @@ export interface AuthResponse {
 
 // Trip type
 export type TripStatus = "planning" | "upcoming" | "ongoing" | "archived";
+export type TripCity = "nyc" | "atlanta" | "lyon";
 
 export interface Trip {
     _id: string;
     title: string;
     description: string;
-    city: "nyc" | "atlanta" | "lyon";
+    city: TripCity;
     startDate: string;
     endDate: string;
     isExact?: boolean;
@@ -42,6 +43,23 @@ export interface Trip {
         activityId: string;
         participants: string[];
     }[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+// Activity type
+// union type for the tags
+export type ActivityTag = "Free" | "Food" | "Music" | "Art" | "Event" | "Views" | "Landmark";
+
+export interface Activity {
+    _id: string;
+    title: string;
+    description: string;
+    location: string;
+    city: TripCity;
+    price: number;
+    imageUrl: string;
+    tags: ActivityTag[];
     createdAt: string;
     updatedAt: string;
 }
