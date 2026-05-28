@@ -18,7 +18,7 @@ const citiesData: City[] = [
 export default function Explore() {   
     
     return (
-        <div className="h-full p-10 flex flex-col gap-8">
+        <div className="min-h-screen h-full p-10 flex flex-col gap-8">
             <h1>Explore Cities</h1>
             <h3>Curated budget travel activities, right at your fingertips!</h3>
 
