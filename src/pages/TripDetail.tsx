@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router";
 import { axiosInstance } from "../services/axios";
 import Button from "../components/Button";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import type { Trip } from "../types";
 import TripStatusTag from "../components/TripStatusTag";
 import TripEditForm from "../components/TripEditForm";
@@ -155,16 +155,25 @@ export default function TripDetail() {
             {/* conditionl label based off editing status */}
             <Button shape="sm" label={isEditing ? "Close" : "Edit Trip"} className="bg-lav w-fit" onClick={() => setIsEditing((v) => !v)}/>
 
-            {/* conditionl render of the edit form */}
-            {isEditing && (
-                // use non-null assertion for ts - it will never actually load the form if the url or trip isnt loaded due to error handling
-                <TripEditForm tripId={tripId!} trip={trip!} onEditedTrip={async ()=> {
-                    // refresh trip fetch with new data
-                    await fetchTrip()
-                    // then set isEditing false to close this
-                    setIsEditing(false)
-                }}/>
-            )}
+            <AnimatePresence mode="sync">
+                {/* conditionl render of the edit form */}
+                {isEditing && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2}}
+                    >
+                        {/* use non-null assertion for ts - it will never actually load the form if the url or trip isnt loaded due to error handling */}
+                        <TripEditForm tripId={tripId!} trip={trip!} onEditedTrip={async ()=> {
+                            // refresh trip fetch with new data
+                            await fetchTrip()
+                            // then set isEditing false to close this
+                            setIsEditing(false)
+                        }}/>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <h2 className="text-2xl font-semibold">Planned Activities</h2>
             <section className=" grid grid-cols-1 md:grid-cols-3 gap-6" aria-label={`List of activities for ${tripId}`}>
